@@ -1,5 +1,8 @@
-class wdog_reg_block extends uvm_reg_block;
+/*  ~wdog_reg_block~ builds all the registers and encapsulates them into
+    a single block. Also defines the address map of the registers as per
+    the ARM_WDOG specifications */
 
+class wdog_reg_block extends uvm_reg_block;
     `uvm_object_utils(wdog_reg_block)
     
     // Register objects
@@ -15,9 +18,9 @@ class wdog_reg_block extends uvm_reg_block;
         super.new(name);
     endfunction //new()
 
-    // Builds the register block
-    // --> build() the registers
-    // --> configure() the register
+    // Function to build the register block
+    // --> build() individual registers
+    // --> configure() individual register
     function void build();
         
         // 1. WDOG_LOAD
@@ -57,7 +60,10 @@ class wdog_reg_block extends uvm_reg_block;
 
 
         // Create address map for the registers
+        // create_map(string name, 	uvm_reg_addr_t base_addr, int unsigned n_bytes,uvm_endianness_e endian)
         default_map = create_map("wdog_reg_map", 0, 4, UVM_LITTLE_ENDIAN);
+
+        //          add_reg(uvm_reg rg,	uvm_reg_addr_t offset, string rights = 	"RW")
         default_map.add_reg(wdog_load,      'h0,    "RW");
         default_map.add_reg(wdog_value,     'h4,    "RO");
         default_map.add_reg(wdog_control,   'h8,    "RW");
@@ -66,6 +72,7 @@ class wdog_reg_block extends uvm_reg_block;
         default_map.add_reg(wdog_mis,       'h14,   "RO");
         default_map.add_reg(wdog_lock,      'hC00,  "RW");
 
+        // Model needs to be locked before it can be used in test bench
         lock_model();
     endfunction: build 
 endclass //reg_file extends uvm_reg_file

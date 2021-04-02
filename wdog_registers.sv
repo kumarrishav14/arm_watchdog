@@ -1,12 +1,16 @@
-//function void configure(uvm_reg 	parent,
-                // int 	unsigned 	size,
-                // int 	unsigned 	lsb_pos,
-                // string 	access,
-                // bit 	volatile,
-                // uvm_reg_data_t 	reset,
-                // bit 	has_reset,
-                // bit 	is_rand,
-                // bit 	individually_accessible	)
+/*  ~wdog_register~ contains various registers which are present in the
+    AMR_WDOG */
+// FOR REFERENCE: Funtion definition of configure(). FOR REFERENCE
+//  function void configure(
+//                  uvm_reg 	                parent,
+//                  int 	        unsigned 	size,
+//                  int 	        unsigned 	lsb_pos,
+//                  string 	                    access,
+//                  bit 	                    volatile,
+//                  uvm_reg_data_t 	            reset,
+//                  bit 	                    has_reset,
+//                  bit 	                    is_rand,
+//                  bit 	                    individually_accessible)
 // *************************************************************
 // 1. WDOG_LOAD (Load Register)
 // *************************************************************
@@ -42,7 +46,7 @@ class Wdog_value extends uvm_reg;
         wdog_value.configure(this, 32, 0, "RO", 1, 32'h0, 0, 0, 0);
     endfunction: build
     
-endclass //wdog_lock extends uvm_reg
+endclass //wdog_value extends uvm_reg
 
 
 // *************************************************************
@@ -61,14 +65,16 @@ class Wdog_control extends uvm_reg;
     endfunction //new()
 
     function void build();
+        // Build ~inten~ field and configure it  
         inten = uvm_reg_field::type_id::create("inten");
         inten.configure(this, 1, 0, "RW", 0, 1'h0, 1, 1, 0);
 
+        // Build ~resen~ field and configure it
         resen = uvm_reg_field::type_id::create("resen");
         resen.configure(this, 1, 1, "RW", 0, 1'h0, 1, 1, 0);
     endfunction: build
     
-endclass //wdog_lock extends uvm_reg
+endclass //wdog_control extends uvm_reg
 
 // *************************************************************
 // 4. WDOG_INTCLR (Interupt Clear Register)
