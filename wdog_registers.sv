@@ -18,7 +18,7 @@
 class Wdog_load extends uvm_reg;
     `uvm_object_utils(Wdog_load)
     
-    uvm_reg_field wdog_load;
+    rand uvm_reg_field wdog_load;
 
     function new(string name = "wdog_load");
         super.new(name, 32, UVM_NO_COVERAGE);
@@ -58,8 +58,8 @@ endclass //wdog_value extends uvm_reg
 class Wdog_control extends uvm_reg;
     `uvm_object_utils(Wdog_value)
     
-    uvm_reg_field inten;
-    uvm_reg_field resen;
+    rand uvm_reg_field inten;
+    rand uvm_reg_field resen;
 
     function new(string name = "wdog_value");
         super.new(name, 32, UVM_NO_COVERAGE);

@@ -11,6 +11,14 @@ package arm_wdog_vip;
     `include "wdog_reg_adapter.sv"
     `include "wdog_reg_model.sv"
 
+    // Config objects
+    `include "config_objects.svh"
+
+    // APB Agent
+    `include "apb_driver.sv"
+    `include "apb_monitor.sv"
+    `include "apb_agent.sv"
+
     // test
     `include "test_reg_seq.sv"
     `include "test_regmodel_test.sv"
