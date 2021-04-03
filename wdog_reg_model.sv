@@ -34,11 +34,11 @@ endclass //wdog_reg_model extends uvm_object
 // *************************************************************
 function void wdog_reg_model::build_phase(uvm_phase phase);
     // Build the register block
-    reg_block = wdog_reg_block::type_id::create("regblock",this);
+    reg_block = wdog_reg_block::type_id::create("reg_block",this);
     reg_block.build();
 
     // Build adapter and predictor for reg model
-    reg_adapter = wdog_reg_adapter::type_id::create("regadapter", ,get_full_name);
+    reg_adapter = wdog_reg_adapter::type_id::create("reg_adapter", ,get_full_name);
     reg_predictor = uvm_reg_predictor#(wdog_seq_item)::type_id::create("reg_predictor", this);
     
 endfunction: build_phase
