@@ -26,6 +26,10 @@ class wdog_reg_model extends uvm_env;
     
     //  Function: connect_phase
     extern function void connect_phase(uvm_phase phase);
+
+    //  Function: start_of_simulation_phase
+    extern function void start_of_simulation_phase(uvm_phase phase);
+    
     
 endclass //wdog_reg_model extends uvm_object
 
@@ -45,13 +49,18 @@ endfunction: build_phase
 
 function void wdog_reg_model::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    // set sequencer and base address for the address map
-    reg_block.default_map.set_sequencer(seqr, reg_adapter);
-    reg_block.default_map.set_base_addr('h00);
 
     // set address map and adapter for PREDICTOR
     reg_predictor.map = reg_block.default_map;
     reg_predictor.adapter = reg_adapter;
 endfunction: connect_phase
+
+function void wdog_reg_model::start_of_simulation_phase(uvm_phase phase);
+    super.start_of_simulation_phase(phase);
+    // set sequencer and base address for the address map
+    reg_block.default_map.set_sequencer(seqr, reg_adapter);
+    reg_block.default_map.set_base_addr('h00);
+endfunction: start_of_simulation_phase
+
 
 

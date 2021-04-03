@@ -60,5 +60,6 @@ function void wdog_seq_item::do_print(uvm_printer printer);
     printer.print_field("PADDR", PADDR, $bits(PADDR), UVM_HEX);
     printer.print_field("PWRITE", PWRITE, $bits(PWRITE), UVM_HEX);
     printer.print_field("PWDATA", PWDATA, $bits(PWDATA), UVM_HEX);
+    printer.print_field("PRDATA", PRDATA, $bits(PRDATA), UVM_HEX);
 endfunction: do_print
 
