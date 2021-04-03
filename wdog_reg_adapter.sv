@@ -11,10 +11,10 @@ class wdog_reg_adapter extends uvm_reg_adapter;
         wdog_seq_item tx;
         tx = wdog_seq_item::type_id::create("tx");
 
-        tx.pwrite = (rw.kind == UVM_WRITE);
-        tx.paddr = rw.addr;
-        if(tx.pwrite) tx.pwdata = rw.data;
-        else tx.prdata = rw.data;
+        tx.PWRITE = (rw.kind == UVM_WRITE);
+        tx.PADDR = rw.addr;
+        if(tx.PWRITE) tx.PWDATA = rw.data;
+        else tx.PRDATA = rw.data;
 
         return tx;
     endfunction
@@ -25,9 +25,9 @@ class wdog_reg_adapter extends uvm_reg_adapter;
         if(!$cast(tx, bus_item))
             `uvm_fatal(get_name(), "Cast failure in reg adapter")
         
-        rw.kind = tx.pwrite? UVM_WRITE:UVM_READ;
-        rw.addr = tx.paddr;
-        rw.data = tx.pwrite? tx.pwdata : tx.prdata;
+        rw.kind = tx.PWRITE? UVM_WRITE:UVM_READ;
+        rw.addr = tx.PADDR;
+        rw.data = tx.PWRITE? tx.PWDATA : tx.PRDATA;
 
         rw.status = UVM_IS_OK;
     endfunction
