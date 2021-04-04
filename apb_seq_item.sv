@@ -1,8 +1,8 @@
-//  Class: wdog_seq_item
+//  Class: apb_seq_item
 //
-class wdog_seq_item extends uvm_sequence_item;
-    typedef wdog_seq_item this_type_t;
-    `uvm_object_utils(wdog_seq_item);
+class apb_seq_item extends uvm_sequence_item;
+    typedef apb_seq_item this_type_t;
+    `uvm_object_utils(apb_seq_item);
 
     //  Group: Variables
          bit        PRESETn;
@@ -17,7 +17,7 @@ class wdog_seq_item extends uvm_sequence_item;
     //  Group: Functions
 
     //  Constructor: new
-    function new(string name = "wdog_seq_item");
+    function new(string name = "apb_seq_item");
         super.new(name);
         PRESETn = 1;
     endfunction: new
@@ -37,7 +37,7 @@ class wdog_seq_item extends uvm_sequence_item;
     //  Function: do_unpack
     // extern function void do_unpack();
     
-endclass: wdog_seq_item
+endclass: apb_seq_item
 
 
 /*----------------------------------------------------------------------------*/
@@ -50,7 +50,7 @@ endclass: wdog_seq_item
 /*----------------------------------------------------------------------------*/
 /*  Functions                                                                 */
 /*----------------------------------------------------------------------------*/
-function void wdog_seq_item::do_print(uvm_printer printer);
+function void apb_seq_item::do_print(uvm_printer printer);
     /*  chain the print with parent classes  */
     super.do_print(printer);
 

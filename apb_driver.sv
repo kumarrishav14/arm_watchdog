@@ -1,8 +1,8 @@
-class apb_driver extends uvm_driver#(wdog_seq_item);
+class apb_driver extends uvm_driver#(apb_seq_item);
     `uvm_component_utils(apb_driver)
     
     //  Group: Variables
-    wdog_seq_item trans_drv;
+    apb_seq_item trans_drv;
     virtual wdog_intf.APB_DRV drv_intf;
     int i;
     event DRV_DONE;
