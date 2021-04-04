@@ -8,8 +8,8 @@ class wdog_reg_adapter extends uvm_reg_adapter;
 
     // reg2bus
     virtual function uvm_sequence_item reg2bus(const ref uvm_reg_bus_op rw);
-        wdog_seq_item tx;
-        tx = wdog_seq_item::type_id::create("tx");
+        apb_seq_item tx;
+        tx = apb_seq_item::type_id::create("tx");
 
         tx.PWRITE = (rw.kind == UVM_WRITE);
         tx.PADDR = rw.addr;
@@ -21,7 +21,7 @@ class wdog_reg_adapter extends uvm_reg_adapter;
 
     // seq2bus
     virtual function void bus2reg(uvm_sequence_item bus_item, ref uvm_reg_bus_op rw);
-        wdog_seq_item tx;
+        apb_seq_item tx;
         if(!$cast(tx, bus_item))
             `uvm_fatal(get_name(), "Cast failure in reg adapter")
         

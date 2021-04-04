@@ -1,11 +1,11 @@
 class apb_agent extends uvm_agent;
     `uvm_component_utils(apb_agent)
     
-    uvm_sequencer #(wdog_seq_item) seqr;
+    uvm_sequencer #(apb_seq_item) seqr;
     apb_driver apb_drv;
     apb_monitor apb_mon;
     env_config env_cfg;
-    uvm_analysis_port#(wdog_seq_item) ap;
+    uvm_analysis_port#(apb_seq_item) ap;
 
     function new(string name, uvm_component parent);
         super.new(name, parent);
@@ -24,7 +24,7 @@ function void apb_agent::build_phase(uvm_phase phase);
     /*  For more information see UVM Cookbook v1800.2 p.503  */
     //super.build_phase(phase);
     `uvm_info(get_name(), "building seqr", UVM_HIGH)
-    seqr = uvm_sequencer#(wdog_seq_item)::type_id::create("seqr", this);
+    seqr = uvm_sequencer#(apb_seq_item)::type_id::create("seqr", this);
     `uvm_info(get_name(), "built seqr", UVM_HIGH)
     apb_drv = apb_driver::type_id::create("apb_drv", this);
     apb_mon = apb_monitor::type_id::create("apb_mon", this);

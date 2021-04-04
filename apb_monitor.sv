@@ -2,11 +2,11 @@ class apb_monitor extends uvm_monitor;
     `uvm_component_utils(apb_monitor)
     
     // Components
-    uvm_analysis_port#(wdog_seq_item) ap;
+    uvm_analysis_port#(apb_seq_item) ap;
 
     // Variables
     virtual wdog_intf.APB_MON intf;
-    wdog_seq_item trans;
+    apb_seq_item trans;
     int ip_pntr, op_pntr;
     bit sampled;
     bit pck_complete;
