@@ -12,9 +12,9 @@ interface wdog_intf(input logic pclk, input logic wdogclk);
 
     // Non-APB Signals
     logic WDOGCLKEN;
-    logic WDOGRSTn;
+    logic WDOGRESn;
     logic WDOGINT;
-    logic WDOGRST;
+    logic WDOGRES;
 
     // ****************************************************************************
     // Clocking block for APB driver and monitor
@@ -33,12 +33,12 @@ interface wdog_intf(input logic pclk, input logic wdogclk);
     // Clocking block for WDOG Driver and monitor
     // ****************************************************************************
     clocking wdog_drv_cb @(posedge wdogclk);
-        output WDOGCLKEN, WDOGRSTn; 
+        output WDOGCLKEN, WDOGRESn; 
     endclocking
     
     clocking wdog_mon_cb @(posedge wdogclk);
-        input WDOGCLKEN, WDOGRSTn; 
-        input #1 WDOGINT, WDOGRST;
+        input WDOGCLKEN, WDOGRESn; 
+        input #1 WDOGINT, WDOGRES;
     endclocking
 
     // ****************************************************************************

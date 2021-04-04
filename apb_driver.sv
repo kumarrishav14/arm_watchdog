@@ -69,6 +69,10 @@ function void apb_driver::build_phase(uvm_phase phase);
 endfunction: build_phase
 
 task apb_driver::run_phase(uvm_phase phase);
+    drv_intf.apb_drv_cb.PRESETn <= 0;
+    @(drv_intf.apb_drv_cb);
+    @(drv_intf.apb_drv_cb);
+    drv_intf.apb_drv_cb.PRESETn <= 1;
     forever begin
         `uvm_info(get_name(), "Requesting for item", UVM_NONE)
         
