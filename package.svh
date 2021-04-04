@@ -21,6 +21,8 @@ package arm_wdog_vip;
 
     // Watchdog Agent
     `include "wdog_driver.sv"
+    `include "wdog_monitor.sv"
+    `include "wdog_agent.sv"
 
     // test
     `include "test_reg_seq.sv"
