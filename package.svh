@@ -3,7 +3,7 @@ package arm_wdog_vip;
     `include "uvm_macros.svh"
 
     // Bus (APB) Sequence item
-    `include "wdog_seq_item.sv"
+    `include "apb_seq_item.sv"
 
     // Register Model
     `include "wdog_registers.sv"
@@ -18,6 +18,9 @@ package arm_wdog_vip;
     `include "apb_driver.sv"
     `include "apb_monitor.sv"
     `include "apb_agent.sv"
+
+    // Watchdog Agent
+    `include "wdog_driver.sv"
 
     // test
     `include "test_reg_seq.sv"
