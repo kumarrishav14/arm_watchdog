@@ -10,9 +10,7 @@ class wdog_monitor extends uvm_monitor;
     function new(string name, uvm_component parent);
         super.new(name, parent);
     endfunction //new()
-
-    // TODO: Implement the monitor logic. Need to decide how and when
-    // to send packets to scoreboard and how to sample the data.
+    
     //  Function: build_phase
     extern function void build_phase(uvm_phase phase);
     

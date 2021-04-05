@@ -57,7 +57,8 @@ function void apb_seq_item::do_print(uvm_printer printer);
     /*  list of local properties to be printed:  */
     // printer.print_string("property_label", property_name);
     // printer.print_field_int("property_label", property_name, $bits(property_name), UVM_HEX);
-    printer.print_field("PADDR", PADDR, $bits(PADDR), UVM_HEX);
+    printer.print_field("PRESETn",PRESETn,$bits(PRESETn),UVM_BIN);
+    printer.print_field("PADDR",  PADDR,  $bits(PADDR),  UVM_HEX);
     printer.print_field("PWRITE", PWRITE, $bits(PWRITE), UVM_HEX);
     printer.print_field("PWDATA", PWDATA, $bits(PWDATA), UVM_HEX);
     printer.print_field("PRDATA", PRDATA, $bits(PRDATA), UVM_HEX);

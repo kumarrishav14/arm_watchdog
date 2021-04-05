@@ -16,10 +16,10 @@ class apb_monitor extends uvm_monitor;
 
     task ip_mon();
         @(intf.apb_mon_cb);
+        trans.PRESETn   = intf.apb_mon_cb.PRESETn;
         if(intf.apb_mon_cb.PENABLE == 1 && !sampled) begin
             trans.PWRITE    = intf.apb_mon_cb.PWRITE;
             // trans.PSEL     = intf.apb_mon_cb.PSEL;
-            trans.PRESETn   = intf.apb_mon_cb.PRESETn;
             trans.PADDR  = intf.apb_mon_cb.PADDR;
             trans.PWDATA = intf.apb_mon_cb.PWDATA;
             ip_pntr++;
@@ -30,6 +30,7 @@ class apb_monitor extends uvm_monitor;
 
     task op_mon();
         @(intf.apb_mon_cb);
+        if(~intf.apb_mon_cb.PRESETn) return;
         if(intf.apb_mon_cb.PREADY == 1 && intf.apb_mon_cb.PENABLE == 1) begin
             // trans.PREADY = intf.apb_mon_cb.PREADY;
             trans.PRDATA  = intf.apb_mon_cb.PRDATA;
