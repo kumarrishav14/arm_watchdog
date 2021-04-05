@@ -4,6 +4,7 @@ package arm_wdog_vip;
 
     // Bus (APB) Sequence item
     `include "apb_seq_item.sv"
+    `include "wdog_seq_item.sv"
 
     // Register Model
     `include "wdog_registers.sv"

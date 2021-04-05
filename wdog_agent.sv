@@ -33,5 +33,6 @@ function void wdog_agent::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
 
     wdog_drv.intf = env_cfg.intf;
+    wdog_mon.intf = env_cfg.intf;
 endfunction: connect_phase
 
