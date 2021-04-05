@@ -19,11 +19,15 @@ class wdog_scoreboard extends uvm_scoreboard;
 
     //  Group: Functions
     function void write_apb(apb_seq_item rcvd_tx);
-        // TODO: Add write_apb implementation
+        if(~rcvd_tx.PRESETn) begin
+            wdog_rm.module_reset();
+        end
     endfunction
 
     function void write_wdog(wdog_seq_item rcvd_tx);
-        // TODO: Add write_wdog implementation
+        if(~rcvd_tx.WDOGRESn) begin
+            wdog_rm.counter_reset();
+        end
     endfunction
 
     //  Constructor: new
@@ -35,7 +39,7 @@ class wdog_scoreboard extends uvm_scoreboard;
     extern function void build_phase(uvm_phase phase);
     
     //  Function: connect_phase
-    // extern function void connect_phase(uvm_phase phase);
+    extern function void connect_phase(uvm_phase phase);
     
     //  Function: run_phase
     extern task run_phase(uvm_phase phase);
@@ -50,7 +54,18 @@ function void wdog_scoreboard::build_phase(uvm_phase phase);
     wdog_ap_imp = new("wdog_ap_imp", this);
 
     wdog_rm = wdog_ref_model::type_id::create("wdog_rm", this);
+
+    if (!uvm_config_db#(env_config)::get(this, "", "env_cfg", env_cfg))
+        `uvm_fatal(get_name(), "env_config cannot be found in ConfigDB!")
+    
 endfunction: build_phase
+
+function void wdog_scoreboard::connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
+
+    wdog_rm.env_cfg = env_cfg;
+endfunction: connect_phase
+
 
 task wdog_scoreboard::run_phase(uvm_phase phase);
     // TODO: Add run task implementation

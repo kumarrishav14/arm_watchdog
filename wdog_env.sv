@@ -43,5 +43,9 @@ function void wdog_env::connect_phase(uvm_phase phase);
 
     // Connecting analysis port of ~apb_agnt~ to predictor of reg model
     apb_agnt.ap.connect(reg_model.reg_predictor.bus_in);
+
+    // Connecting analysis port of ~apb_agnt~ to scoreboard
+    apb_agnt.ap.connect(wdog_scb.apb_ap_imp);
+    wdog_agnt.ap.connect(wdog_scb.wdog_ap_imp);
 endfunction: connect_phase
 
