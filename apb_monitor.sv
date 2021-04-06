@@ -17,15 +17,16 @@ class apb_monitor extends uvm_monitor;
     task ip_mon();
         @(intf.apb_mon_cb);
         trans.PRESETn   = intf.apb_mon_cb.PRESETn;
-        if(intf.apb_mon_cb.PENABLE == 1 && !sampled) begin
+        if(intf.apb_mon_cb.PSEL == 1 && !sampled) begin
             trans.PWRITE    = intf.apb_mon_cb.PWRITE;
             // trans.PSEL     = intf.apb_mon_cb.PSEL;
             trans.PADDR  = intf.apb_mon_cb.PADDR;
             trans.PWDATA = intf.apb_mon_cb.PWDATA;
-            ip_pntr++;
+            trans.is_ip_pckt = 1;
             sampled = 1;
+            ap.write(trans);
         end
-        if(intf.apb_mon_cb.PENABLE == 0) sampled = 0;
+        if(~intf.apb_mon_cb.PENABLE && ~intf.apb_mon_cb.PSEL) sampled = 0;
     endtask
 
     task op_mon();
@@ -34,6 +35,7 @@ class apb_monitor extends uvm_monitor;
         if(intf.apb_mon_cb.PREADY == 1 && intf.apb_mon_cb.PENABLE == 1) begin
             // trans.PREADY = intf.apb_mon_cb.PREADY;
             trans.PRDATA  = intf.apb_mon_cb.PRDATA;
+            trans.is_ip_pckt = 0;
             op_pntr++;
             pck_complete = 1;
         end 
@@ -68,7 +70,8 @@ task apb_monitor::run_phase(uvm_phase phase);
         `uvm_info(get_name(), $sformatf("pck_complete: %b, PSEL1: %b", pck_complete, intf.apb_mon_cb.PSEL), UVM_DEBUG)
         // pck_complete && !intf.apb_mon_cb.PSEL
         if((pck_complete) || !intf.apb_mon_cb.PRESETn) begin
-            `uvm_info(get_name(), "Sampled Packet is:", UVM_LOW)
+            `uvm_info(get_name(), "Sampled Packet is:", UVM_LOW)   
+            
             trans.print();
             ap.write(trans);
             trans = new("sam_trans");

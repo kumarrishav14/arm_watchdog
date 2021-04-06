@@ -22,10 +22,6 @@ class wdog_monitor extends uvm_monitor;
 endclass //wdog_monitor extends uvm_monitor
 
 function void wdog_monitor::build_phase(uvm_phase phase);
-    /*  note: Do not call super.build_phase() from any class that is extended from an UVM base class!  */
-    /*  For more information see UVM Cookbook v1800.2 p.503  */
-    //super.build_phase(phase);
-
     ap = new("ap", this);
     sampled_item = wdog_seq_item::type_id::create("sampled_item");
 endfunction: build_phase

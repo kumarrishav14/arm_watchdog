@@ -5,6 +5,7 @@ class wdog_ref_model extends uvm_component;
 
     //  Group: Components
     virtual wdog_intf.WDOG_MON intf;
+    virtual wdog_intf intf_pclk;
     env_config env_cfg;
 
     // *****************************************************************
@@ -64,6 +65,10 @@ class wdog_ref_model extends uvm_component;
     // Internal variables
     bit wdog_inten_rise;
     bit wdog_inten_prev;
+
+    // sampled value
+    reg [31:0] sampled_value;
+    reg [31:0] sampled_prev_value;
     
     // *****************************************************************
     //  Group: Functions
@@ -87,15 +92,19 @@ class wdog_ref_model extends uvm_component;
             `WDOG_CONTROL_A: begin
                             wdog_control = pwdata[1:0];
                             wdog_inten_rise = !wdog_inten_prev & wdog_control[0];
+                            wdog_inten_prev = wdog_control[0];
                             if(wdog_inten_rise)
                                 ->reset_counter;
             end
                          
-            `WDOG_INTCLR_A: wdog_intclr = pwdata;
+            `WDOG_INTCLR_A: begin
+                            wdog_intclr = pwdata;
+                            if(~WDOGRES)
+                                ->reset_counter;
+            end
             `WDOG_ITCR_A: wdog_itcr = pwdata[0];
             `WDOG_ITOP_A: wdog_itop = pwdata[1:0];
         endcase
-        // TODO: Implement a reset for counter for valid cases
     endfunction
 
     function bit [31:0] read_reg_value(bit [11:0] paddr);
@@ -103,7 +112,7 @@ class wdog_ref_model extends uvm_component;
         
         case (paddr)
             `WDOG_LOAD_A:           return wdog_load;
-            `WDOG_VALUE_A:          return wdog_value;
+            `WDOG_VALUE_A:          return sampled_value;
             `WDOG_CONTROL_A:        return wdog_control;
             `WDOG_RIS_A:            return wdog_ris;
             `WDOG_MIS_A:            return wdog_mis;
@@ -122,7 +131,7 @@ class wdog_ref_model extends uvm_component;
     endfunction
 
     function wdog_seq_item get_wdog_value();
-
+        
     endfunction
 
     function void counter_reset();
@@ -152,20 +161,24 @@ class wdog_ref_model extends uvm_component;
         forever begin 
             @(intf.wdog_mon_cb);
             if(intf.wdog_mon_cb.WDOGCLKEN) begin
-                `uvm_info(get_name(), "decrementing counter", UVM_HIGH)
+                `uvm_info(get_name(), "decrementing counter", UVM_DEBUG)
                 
                 counter -= 1;
-                wdog_value = counter;    
+                wdog_value = counter; 
+                `uvm_info(get_name(), $sformatf("counter value is %0h, wdog_value is %0h", counter, wdog_value), UVM_DEBUG)   
             end
             
             if(counter == 0 && !wdog_ris) begin
+                @(intf.wdog_mon_cb);
                 wdog_ris = 1;
                 wdog_mis = wdog_ris & wdog_control[0];
                 WDOGINT = 1;
                 counter = wdog_load;
                 wdog_value = counter;
+                // @(intf.wdog_mon_cb);
             end
             else if(counter == 0 && wdog_ris) begin
+                @(intf.wdog_mon_cb);
                 WDOGRES = wdog_control[1] ? 1:0;
                 return;
             end
@@ -173,7 +186,17 @@ class wdog_ref_model extends uvm_component;
         end
     endtask
 
-    
+    task sample_values_at_pclk();
+        forever begin
+            @(posedge intf_pclk.pclk);
+            // #1;
+            `uvm_info(get_name(), $sformatf("counter value is %0h, wdog_value is %0h in sample function", counter, wdog_value), UVM_DEBUG) 
+            sampled_value = counter;
+            sampled_prev_value <= sampled_value;
+            `uvm_info(get_name(), $sformatf("sampled value is %0h, prev_value is %0h", sampled_value, sampled_prev_value), UVM_DEBUG)
+            
+        end
+    endtask
 
     //  Constructor: new
     function new(string name = "wdog_ref_model", uvm_component parent);
@@ -191,18 +214,25 @@ endclass: wdog_ref_model
 function void wdog_ref_model::start_of_simulation_phase(uvm_phase phase);
     super.start_of_simulation_phase(phase);
     intf = env_cfg.intf;
+    intf_pclk = env_cfg.intf;
 endfunction: start_of_simulation_phase
 
 task wdog_ref_model::run_phase(uvm_phase phase);
+    fork
+        sample_values_at_pclk();
+    join_none
     forever begin
+        if(wdog_inten_rise)
+            @(intf.wdog_mon_cb);
+
         if(wdog_control[0]) begin
-            @(intf.wdog_mon_cb)
+            // @(intf.wdog_mon_cb)
             fork
                 run_counter();
             join_none
             @(reset_counter);
             disable fork;
-            counter_reset();
+            counter_reset();    
         end
         else #1;
     end
