@@ -19,7 +19,7 @@ class apb_driver extends uvm_driver#(apb_seq_item);
         // #2;
         drv_intf.apb_drv_cb.PSEL    <= 1;
         drv_intf.apb_drv_cb.PENABLE <= 0;
-        drv_intf.apb_drv_cb.PRESETn <= trans_drv.PRESETn;
+        // drv_intf.apb_drv_cb.PRESETn <= trans_drv.PRESETn;
         drv_intf.apb_drv_cb.PWRITE  <= trans_drv.PWRITE;
         drv_intf.apb_drv_cb.PWDATA  <= trans_drv.PWDATA;
         drv_intf.apb_drv_cb.PADDR   <= trans_drv.PADDR;

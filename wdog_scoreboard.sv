@@ -53,7 +53,7 @@ class wdog_scoreboard extends uvm_scoreboard;
 
     function void write_wdog(wdog_seq_item rcvd_tx);
         if(~rcvd_tx.WDOGRESn) begin
-            wdog_rm.counter_reset();
+            wdog_rm.counter_reset(1);
         end
         else begin
             

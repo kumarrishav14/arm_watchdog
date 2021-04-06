@@ -11,6 +11,23 @@ class wdog_env extends uvm_env;
     // Scoreboard
     wdog_scoreboard wdog_scb;
 
+    // Reset Generator
+    wdog_reset_generator wdog_rst_gen;
+
+    // Functions
+
+    function reset_frc();
+        fork
+            wdog_rst_gen.reset_frc();
+        join_none
+    endfunction
+
+    function reset_module();
+        fork
+            wdog_rst_gen.reset_module();
+        join_none
+    endfunction
+
     function new(string name, uvm_component parent);
         super.new(name, parent);
     endfunction //new()
@@ -34,6 +51,9 @@ function void wdog_env::build_phase(uvm_phase phase);
 
     // Building Scoreboard
     wdog_scb = wdog_scoreboard::type_id::create("wdog_scb", this);
+
+    // Building Reset generator
+    wdog_rst_gen = wdog_reset_generator::type_id::create("wdog_res_gen", this);
 endfunction: build_phase
 
 function void wdog_env::connect_phase(uvm_phase phase);

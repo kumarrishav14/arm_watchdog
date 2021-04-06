@@ -10,9 +10,11 @@ class apb_seq_item extends uvm_sequence_item;
     rand bit [31:0] PWDATA;
     rand bit [31:0] PRDATA;
     rand bit [31:0] PADDR;
-
-         bit [10:0] p_id; 
+ 
          bit        is_ip_pckt; 
+
+    // p_id to track the packets
+    static bit [10:0] p_id;
 
     //  Group: Constraints
 
@@ -23,6 +25,7 @@ class apb_seq_item extends uvm_sequence_item;
     function new(string name = "apb_seq_item");
         super.new(name);
         PRESETn = 1;
+        
     endfunction: new
 
     //  Function: do_copy
@@ -60,6 +63,7 @@ function void apb_seq_item::do_print(uvm_printer printer);
     /*  list of local properties to be printed:  */
     // printer.print_string("property_label", property_name);
     // printer.print_field_int("property_label", property_name, $bits(property_name), UVM_HEX);
+    printer.print_field("p_id",   p_id,   $bits(p_id),   UVM_UNSIGNED);
     printer.print_field("PRESETn",PRESETn,$bits(PRESETn),UVM_BIN);
     printer.print_field("PADDR",  PADDR,  $bits(PADDR),  UVM_HEX);
     printer.print_field("PWRITE", PWRITE, $bits(PWRITE), UVM_HEX);
@@ -76,7 +80,6 @@ function void apb_seq_item::do_copy(uvm_object rhs);
         `uvm_error({this.get_name(), ".do_copy()"}, "Cast failed!");
         return;
     end
-    // `uvm_info({this.get_name(), ".do_copy()"}, "Cast succeded.", UVM_HIGH);
 
     /*  chain the copy with parent classes  */
     super.do_copy(rhs);

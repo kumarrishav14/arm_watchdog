@@ -134,13 +134,16 @@ class wdog_ref_model extends uvm_component;
         
     endfunction
 
-    function void counter_reset();
+    function void counter_reset(bit trigger_reset_event);
         `uvm_info(get_name(), "Resetting counter", UVM_HIGH)
         
         wdog_value  = wdog_load;
         wdog_ris    = 0;
         wdog_mis    = 0;
         WDOGINT     = 0;
+
+        if(trigger_reset_event)
+            ->reset_counter;
     endfunction
 
     function void module_reset();
@@ -152,6 +155,7 @@ class wdog_ref_model extends uvm_component;
         wdog_lock       = 0;
         WDOGRES         = 0;
         wdog_inten_prev = wdog_control[0];
+        wdog_inten_rise = 0;
     endfunction
 
     task run_counter();
@@ -180,6 +184,8 @@ class wdog_ref_model extends uvm_component;
             else if(counter == 0 && wdog_ris) begin
                 @(intf.wdog_mon_cb);
                 WDOGRES = wdog_control[1] ? 1:0;
+                counter = wdog_load;
+                sampled_value = counter;
                 return;
             end
             
@@ -203,6 +209,9 @@ class wdog_ref_model extends uvm_component;
         super.new(name, parent);
     endfunction: new
 
+    //  Function: build_phase
+    extern function void build_phase(uvm_phase phase);
+    
     //  Function: start_of_simulation_phase
     extern function void start_of_simulation_phase(uvm_phase phase);
     
@@ -211,10 +220,23 @@ class wdog_ref_model extends uvm_component;
     
 endclass: wdog_ref_model
 
+function void wdog_ref_model::build_phase(uvm_phase phase);
+    wdog_pcell_id0 = 8'h0D;
+    wdog_pcell_id1 = 8'hF0;
+    wdog_pcell_id2 = 8'h05;
+    wdog_pcell_id3 = 8'hB1;
+endfunction: build_phase
+
+
 function void wdog_ref_model::start_of_simulation_phase(uvm_phase phase);
     super.start_of_simulation_phase(phase);
     intf = env_cfg.intf;
     intf_pclk = env_cfg.intf;
+
+    wdog_peripheral_id0 = env_cfg.peripheral_id0;
+    wdog_peripheral_id1 = env_cfg.peripheral_id1;
+    wdog_peripheral_id2 = env_cfg.peripheral_id2;
+    wdog_peripheral_id3 = env_cfg.peripheral_id3;
 endfunction: start_of_simulation_phase
 
 task wdog_ref_model::run_phase(uvm_phase phase);
@@ -232,7 +254,7 @@ task wdog_ref_model::run_phase(uvm_phase phase);
             join_none
             @(reset_counter);
             disable fork;
-            counter_reset();    
+            counter_reset(0);    
         end
         else #1;
     end
