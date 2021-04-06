@@ -29,6 +29,9 @@ package arm_wdog_vip;
     `include "wdog_ref_model.sv"
     `include "wdog_scoreboard.sv"
 
+    // Reset Generator
+    `include "wdog_reset_generator.sv"
+
     // Environment
     `include "wdog_env.sv"
     
