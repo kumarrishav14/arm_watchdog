@@ -22,11 +22,28 @@ class wdog_scoreboard extends uvm_scoreboard;
         if(~rcvd_tx.PRESETn) begin
             wdog_rm.module_reset();
         end
+        else begin
+            if(rcvd_tx.PWRITE)begin
+                wdog_rm.write_reg_value(rcvd_tx.PADDR[11:0], rcvd_tx.PWDATA);
+                `uvm_info(get_name(), $sformatf("Value written is %0h", rcvd_tx.PWDATA), UVM_HIGH)
+                
+            end
+                
+            else begin
+                bit [31:0] val;
+                val = wdog_rm.read_reg_value(rcvd_tx.PADDR[11:0]);
+                `uvm_info(get_name(), $sformatf("Value returned is %0h", val), UVM_HIGH)
+            end
+        end
     endfunction
 
     function void write_wdog(wdog_seq_item rcvd_tx);
         if(~rcvd_tx.WDOGRESn) begin
             wdog_rm.counter_reset();
+        end
+        else begin
+            
+            
         end
     endfunction
 

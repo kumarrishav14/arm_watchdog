@@ -60,6 +60,10 @@ class wdog_ref_model extends uvm_component;
 
     // event
     event reset_counter;
+
+    // Internal variables
+    bit wdog_inten_rise;
+    bit wdog_inten_prev;
     
     // *****************************************************************
     //  Group: Functions
@@ -80,7 +84,13 @@ class wdog_ref_model extends uvm_component;
                             wdog_value = pwdata;
                             counter = wdog_value;
                         end
-            `WDOG_CONTROL_A: wdog_control = pwdata[1:0];
+            `WDOG_CONTROL_A: begin
+                            wdog_control = pwdata[1:0];
+                            wdog_inten_rise = !wdog_inten_prev & wdog_control[0];
+                            if(wdog_inten_rise)
+                                ->reset_counter;
+            end
+                         
             `WDOG_INTCLR_A: wdog_intclr = pwdata;
             `WDOG_ITCR_A: wdog_itcr = pwdata[0];
             `WDOG_ITOP_A: wdog_itop = pwdata[1:0];
@@ -89,6 +99,8 @@ class wdog_ref_model extends uvm_component;
     endfunction
 
     function bit [31:0] read_reg_value(bit [11:0] paddr);
+        `uvm_info(get_name(), "reading value from reg", UVM_HIGH)
+        
         case (paddr)
             `WDOG_LOAD_A:           return wdog_load;
             `WDOG_VALUE_A:          return wdog_value;
@@ -130,33 +142,38 @@ class wdog_ref_model extends uvm_component;
         wdog_control    = 2'b00;
         wdog_lock       = 0;
         WDOGRES         = 0;
+        wdog_inten_prev = wdog_control[0];
     endfunction
 
     task run_counter();
         counter = wdog_load;
-        forever begin
-            if(wdog_control[0]) begin
-                @(intf.wdog_mon_cb);
-                if(intf.wdog_mon_cb.WDOGCLKEN) begin
-                    counter -= 1;
-                    wdog_value = counter;    
-                end
+        // as monitor returns the value for the previous clock
+        // @(intf.wdog_mon_cb);
+        forever begin 
+            @(intf.wdog_mon_cb);
+            if(intf.wdog_mon_cb.WDOGCLKEN) begin
+                `uvm_info(get_name(), "decrementing counter", UVM_HIGH)
                 
-                if(counter == 0 && !wdog_ris) begin
-                    wdog_ris = 1;
-                    wdog_mis = wdog_ris & wdog_control[0];
-                    WDOGINT = 1;
-                    counter = wdog_load;
-                    wdog_value = counter;
-                end
-                else if(counter == 0 && wdog_ris) begin
-                    WDOGRES = wdog_control[1] ? 1:0;
-                    return;
-                end
+                counter -= 1;
+                wdog_value = counter;    
+            end
+            
+            if(counter == 0 && !wdog_ris) begin
+                wdog_ris = 1;
+                wdog_mis = wdog_ris & wdog_control[0];
+                WDOGINT = 1;
+                counter = wdog_load;
+                wdog_value = counter;
+            end
+            else if(counter == 0 && wdog_ris) begin
+                WDOGRES = wdog_control[1] ? 1:0;
+                return;
             end
             
         end
     endtask
+
+    
 
     //  Constructor: new
     function new(string name = "wdog_ref_model", uvm_component parent);
@@ -179,6 +196,7 @@ endfunction: start_of_simulation_phase
 task wdog_ref_model::run_phase(uvm_phase phase);
     forever begin
         if(wdog_control[0]) begin
+            @(intf.wdog_mon_cb)
             fork
                 run_counter();
             join_none

@@ -66,7 +66,8 @@ task apb_monitor::run_phase(uvm_phase phase);
             op_mon();
         join
         `uvm_info(get_name(), $sformatf("pck_complete: %b, PSEL1: %b", pck_complete, intf.apb_mon_cb.PSEL), UVM_DEBUG)
-        if((pck_complete && !intf.apb_mon_cb.PSEL) || !intf.apb_mon_cb.PRESETn) begin
+        // pck_complete && !intf.apb_mon_cb.PSEL
+        if((pck_complete) || !intf.apb_mon_cb.PRESETn) begin
             `uvm_info(get_name(), "Sampled Packet is:", UVM_LOW)
             trans.print();
             ap.write(trans);
