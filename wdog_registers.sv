@@ -61,7 +61,7 @@ class Wdog_control extends uvm_reg;
     rand uvm_reg_field inten;
     rand uvm_reg_field resen;
 
-    function new(string name = "wdog_value");
+    function new(string name = "wdog_control");
         super.new(name, 32, UVM_NO_COVERAGE);
     endfunction //new()
 

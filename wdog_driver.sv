@@ -18,9 +18,11 @@ endclass //wdog_driver extends uvm_driver
 
 
 task wdog_driver::run_phase(uvm_phase phase);
+    intf.wdog_drv_cb.WDOGRESn   <= 0;
+    @(intf.wdog_drv_cb);
     forever begin
         @(intf.wdog_drv_cb);
         intf.wdog_drv_cb.WDOGCLKEN  <= 1;
-        intf.wdog_drv_cb.WDOGRSTn   <= 1;
+        intf.wdog_drv_cb.WDOGRESn   <= 1;
     end
 endtask: run_phase

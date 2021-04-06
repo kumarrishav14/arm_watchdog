@@ -2,8 +2,9 @@ package arm_wdog_vip;
     import uvm_pkg::*;
     `include "uvm_macros.svh"
 
-    // Bus (APB) Sequence item
+    // Bus (APB) and Watchdog Sequence item
     `include "apb_seq_item.sv"
+    `include "wdog_seq_item.sv"
 
     // Register Model
     `include "wdog_registers.sv"
@@ -24,6 +25,16 @@ package arm_wdog_vip;
     `include "wdog_monitor.sv"
     `include "wdog_agent.sv"
 
+    // Scoreboard
+    `include "wdog_ref_model.sv"
+    `include "wdog_scoreboard.sv"
+
+    // Reset Generator
+    `include "wdog_reset_generator.sv"
+
+    // Environment
+    `include "wdog_env.sv"
+    
     // test
     `include "test_reg_seq.sv"
     `include "test_regmodel_test.sv"

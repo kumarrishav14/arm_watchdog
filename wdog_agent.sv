@@ -5,6 +5,8 @@ class wdog_agent extends uvm_agent;
     wdog_monitor wdog_mon;
     env_config env_cfg;
 
+    uvm_analysis_port#(wdog_seq_item) ap;
+
     function new(string name, uvm_component parent);
         super.new(name, parent);
     endfunction //new()
@@ -33,5 +35,8 @@ function void wdog_agent::connect_phase(uvm_phase phase);
     super.connect_phase(phase);
 
     wdog_drv.intf = env_cfg.intf;
+    wdog_mon.intf = env_cfg.intf;
+
+    ap = wdog_mon.ap;
 endfunction: connect_phase
 

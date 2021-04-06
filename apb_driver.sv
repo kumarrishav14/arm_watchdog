@@ -19,7 +19,7 @@ class apb_driver extends uvm_driver#(apb_seq_item);
         // #2;
         drv_intf.apb_drv_cb.PSEL    <= 1;
         drv_intf.apb_drv_cb.PENABLE <= 0;
-        drv_intf.apb_drv_cb.PRESETn <= trans_drv.PRESETn;
+        // drv_intf.apb_drv_cb.PRESETn <= trans_drv.PRESETn;
         drv_intf.apb_drv_cb.PWRITE  <= trans_drv.PWRITE;
         drv_intf.apb_drv_cb.PWDATA  <= trans_drv.PWDATA;
         drv_intf.apb_drv_cb.PADDR   <= trans_drv.PADDR;
@@ -69,6 +69,10 @@ function void apb_driver::build_phase(uvm_phase phase);
 endfunction: build_phase
 
 task apb_driver::run_phase(uvm_phase phase);
+    drv_intf.apb_drv_cb.PRESETn <= 0;
+    @(drv_intf.apb_drv_cb);
+    @(drv_intf.apb_drv_cb);
+    drv_intf.apb_drv_cb.PRESETn <= 1;
     forever begin
         `uvm_info(get_name(), "Requesting for item", UVM_NONE)
         
